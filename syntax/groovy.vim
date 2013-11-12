@@ -1,14 +1,25 @@
 " Vim syntax file
-" Language:     Groovy
-" Maintainer:   Alonso Torres <alonso.javier.torres@gmail.com>
-" Version:      0.2.0
-" URL:          https://github.com/Alotor/groovim
-" Last Change:  10/11/2013
+" Language:	Groovy
+" Original Author:	Alessio Pace <billy.corgan@tiscali.it>
+" Maintainer:	Tobias Rapp <yahuxo@gmx.de>
+" Version: 	0.1.13
+" URL:	  http://www.vim.org/scripts/script.php?script_id=945
+" Last Change:	2013 Apr 24
 
-" This plugin is a fork of the Groovy syntax created by Alession Pace and
-" added several features
+" THE ORIGINAL AUTHOR'S NOTES:
 "
-" HOWTO USE IT (INSTALL):
+" This is my very first vim script, I hope to have
+" done it the right way.
+"
+" I must directly or indirectly thank the author of java.vim and ruby.vim:
+" I copied from them most of the stuff :-)
+"
+" Relies on html.vim
+
+" For version 5.x: Clear all syntax items
+" For version 6.x: Quit when a syntax file was already loaded
+"
+" HOWTO USE IT (INSTALL) when not part of the distribution:
 "
 " 1) copy the file in the (global or user's $HOME/.vim/syntax/) syntax folder
 "
@@ -30,7 +41,8 @@
 "
 " 4) open/write a .groovy file or a groovy script :-)
 "
-" You can add features by doing a pull request on the Github repo
+" Let me know if you like it or send me patches, so that I can improve it
+" when I have time
 
 " Quit when a syntax file was already loaded
 if !exists("main_syntax")
@@ -42,6 +54,9 @@ if !exists("main_syntax")
   " we define it here so that included files can test for it
   let main_syntax='groovy'
 endif
+
+let s:cpo_save = &cpo
+set cpo&vim
 
 " don't use standard HiLink, it will not work with included syntax files
 if version < 508
@@ -59,7 +74,7 @@ endif
 
 " keyword definitions
 syn keyword groovyExternal        native package
-syn match groovyExternal          "\<import\(\s\+static\>\)\?"
+syn match groovyExternal          "\<import\>\(\s\+static\>\)\?"
 syn keyword groovyError           goto const
 syn keyword groovyConditional     if else switch
 syn keyword groovyRepeat          while for do
@@ -218,6 +233,7 @@ if !exists("groovy_ignore_groovydoc") && main_syntax != 'jsp'
   " syntax include @groovyHtml <sfile>:p:h/html.vim
    syntax include @groovyHtml runtime! syntax/html.vim
   unlet b:current_syntax
+  syntax spell default  " added by Bram
   syn region  groovyDocComment    start="/\*\*"  end="\*/" keepend contains=groovyCommentTitle,@groovyHtml,groovyDocTags,groovyTodo,@Spell
   syn region  groovyCommentTitle  contained matchgroup=groovyDocComment start="/\*\*"   matchgroup=groovyCommentTitle keepend end="\.$" end="\.[ \t\r<&]"me=e-1 end="[^{]@"me=s-2,he=s-1 end="\*/"me=s-1,he=s-1 contains=@groovyHtml,groovyCommentStar,groovyTodo,@Spell,groovyDocTags
 
@@ -234,14 +250,17 @@ syn match   groovyComment          "/\*\*/"
 " Strings and constants
 syn match   groovySpecialError     contained "\\."
 syn match   groovySpecialCharError contained "[^']"
-syn match   groovySpecialChar      contained "\\\([4-9]\d\|[0-3]\d\d\|[\"\\'ntbrf]\|u\x\{4\}\)"
+syn match   groovySpecialChar      contained "\\\([4-9]\d\|[0-3]\d\d\|[\"\\'ntbrf]\|u\x\{4\}\|\$\)"
+syn match   groovyRegexChar        contained "\\."
 syn region  groovyString          start=+"+ end=+"+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
-syn region  groovyString          start=+'+ end=+'+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
-syn region  groovyRegexp          start=+/[^\*]+ end=+[^\*]/+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
-syn region  groovyMultiLineString start=+'''+ end=+'''+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
-
+syn region  groovyString          start=+'+ end=+'+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell
+syn region  groovyString          start=+"""+ end=+"""+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
+syn region  groovyString          start=+'''+ end=+'''+ contains=groovySpecialChar,groovySpecialError,@Spell
+" regex string
+" syn region groovyString           start='/[^/]'  end='/' contains=groovySpecialChar,groovyRegexChar,groovyELExpr
 " syn region groovyELExpr start=+${+ end=+}+ keepend contained
- syn match groovyELExpr /\${.\{-}}/ contained
+syn match groovyELExpr /\${.\{-}}/ contained
+syn match groovyELExpr /\$[a-zA-Z_][a-zA-Z0-9_.]*/ contained
 GroovyHiLink groovyELExpr Identifier
 
 " TODO: better matching. I am waiting to understand how it really works in groovy
@@ -400,8 +419,7 @@ if version >= 508 || !exists("did_groovy_syn_inits")
   GroovyHiLink groovySpecialError	Error
   GroovyHiLink groovySpecialCharError	Error
   GroovyHiLink groovyString		String
-  GroovyHiLink groovyMultiLineString    String
-  GroovyHiLink groovyRegexp             String
+  GroovyHiLink groovyRegexChar		String
   GroovyHiLink groovyCharacter		Character
   GroovyHiLink groovySpecialChar	SpecialChar
   GroovyHiLink groovyNumber		Number
@@ -441,5 +459,8 @@ if main_syntax == 'groovy'
 endif
 
 let b:spell_options="contained"
+
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim: ts=8
