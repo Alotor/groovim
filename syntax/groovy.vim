@@ -85,6 +85,7 @@ syn keyword groovyOperator        new instanceof
 syn keyword groovyType            boolean char byte short int long float double
 syn keyword groovyType            void
 syn keyword groovyType		  Integer Double Date Boolean Float String Array Vector List
+
 syn keyword groovyStatement       return
 syn keyword groovyStorageClass    static synchronized transient volatile final strictfp serializable
 syn keyword groovyExceptions      throw try catch finally
@@ -158,7 +159,6 @@ syn match groovyOperator "<\{2,3}"
 syn match groovyOperator ">\{2,3}"
 syn match groovyOperator "->"
 syn match groovyExternal		'^#!.*[/\\]groovy\>'
-syn match groovyExceptions        "\<Exception\>\|\<[A-Z]\{1,}[a-zA-Z0-9]*Exception\>"
 
 " Groovy JDK stuff
 syn keyword groovyJDKBuiltin    as def in
@@ -347,7 +347,6 @@ if exists("groovy_highlight_debug")
 endif
 
 " Match all Exception classes
-syn match groovyExceptions        "\<Exception\>\|\<[A-Z]\{1,}[a-zA-Z0-9]*Exception\>"
 
 
 if !exists("groovy_minlines")
@@ -393,6 +392,10 @@ syn region  groovyParenT  transparent matchgroup=groovyParen  start="\["  end="\
 syn region  groovyParenT1 transparent matchgroup=groovyParen1 start="\[" end="\]" contains=@groovyTop,groovyParenT2 contained
 syn region  groovyParenT2 transparent matchgroup=groovyParen2 start="\[" end="\]" contains=@groovyTop,groovyParenT  contained
 syn match   groovyParenError       "\]"
+
+" Custom user classes
+syn match   userClasses            "\<[A-Z]\{1,}[a-zA-Z0-9]*\>"
+syn match groovyExceptions        "\<Exception\>\|\<[A-Z]\{1,}[a-zA-Z0-9]*Exception\>"
 
 " ###############################
 " java.vim default highlighting
@@ -440,6 +443,8 @@ if version >= 508 || !exists("did_groovy_syn_inits")
   GroovyHiLink groovyCommentStar	groovyComment
 
   GroovyHiLink groovyType		Type
+  GroovyHiLink userClasses              Include
+  GroovyHiLink userException            Exception
   GroovyHiLink groovyExternal		Include
 
   GroovyHiLink htmlComment		Special

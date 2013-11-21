@@ -13,3 +13,4 @@ features added in Groovy since then.
 ## Changes to the original plugin
 * Added multiline strings
 * Added regular expressions literals
+* Added syntax colouring on classes
