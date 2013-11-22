@@ -202,7 +202,7 @@ if !exists("groovy_allow_cpp_keywords")
 endif
 
 " The following cluster contains all groovy groups except the contained ones
-syn cluster groovyTop add=groovyExternal,groovyError,groovyError,groovyBranch,groovyLabelRegion,groovyLabel,groovyConditional,groovyRepeat,groovyBoolean,groovyConstant,groovyTypedef,groovyOperator,groovyType,groovyType,groovyStatement,groovyStorageClass,groovyAssert,groovyExceptions,groovyMethodDecl,groovyClassDecl,groovyClassDecl,groovyClassDecl,groovyScopeDecl,groovyError,groovyError2,groovyUserLabel,groovyLangObject
+syn cluster groovyTop add=groovyExternal,groovyError,groovyError,groovyBranch,groovyLabelRegion,groovyLabel,groovyConditional,groovyRepeat,groovyBoolean,groovyConstant,groovyTypedef,groovyOperator,userClasses,groovyType,groovyType,groovyStatement,groovyStorageClass,groovyAssert,groovyExceptions,groovyMethodDecl,groovyClassDecl,groovyClassDecl,groovyClassDecl,groovyScopeDecl,groovyError,groovyError2,groovyUserLabel,groovyLangObject
 
 
 " Comments
@@ -287,16 +287,16 @@ syn cluster groovyTop add=groovyString,groovyCharacter,groovyNumber,groovySpecia
 
 if exists("groovy_highlight_functions")
   if groovy_highlight_functions == "indent"
-    syn match  groovyFuncDef "^\(\t\| \{8\}\)[_$a-zA-Z][_$a-zA-Z0-9_. \[\]]*([^-+*/()]*)" contains=groovyScopeDecl,groovyType,groovyStorageClass,@groovyClasses
-    syn region groovyFuncDef start=+^\(\t\| \{8\}\)[$_a-zA-Z][$_a-zA-Z0-9_. \[\]]*([^-+*/()]*,\s*+ end=+)+ contains=groovyScopeDecl,groovyType,groovyStorageClass,@groovyClasses
-    syn match  groovyFuncDef "^  [$_a-zA-Z][$_a-zA-Z0-9_. \[\]]*([^-+*/()]*)" contains=groovyScopeDecl,groovyType,groovyStorageClass,@groovyClasses
-    syn region groovyFuncDef start=+^  [$_a-zA-Z][$_a-zA-Z0-9_. \[\]]*([^-+*/()]*,\s*+ end=+)+ contains=groovyScopeDecl,groovyType,groovyStorageClass,@groovyClasses
+    syn match  groovyFuncDef "^\(\t\| \{8\}\)[_$a-zA-Z][_$a-zA-Z0-9_. \[\]]*([^-+*/()]*)" contains=groovyScopeDecl,userClasses,groovyType,groovyStorageClass,@groovyClasses
+    syn region groovyFuncDef start=+^\(\t\| \{8\}\)[$_a-zA-Z][$_a-zA-Z0-9_. \[\]]*([^-+*/()]*,\s*+ end=+)+ contains=groovyScopeDecl,userClasses,groovyType,groovyStorageClass,@groovyClasses
+    syn match  groovyFuncDef "^  [$_a-zA-Z][$_a-zA-Z0-9_. \[\]]*([^-+*/()]*)" contains=groovyScopeDecl,userClasses,groovyType,groovyStorageClass,@groovyClasses
+    syn region groovyFuncDef start=+^  [$_a-zA-Z][$_a-zA-Z0-9_. \[\]]*([^-+*/()]*,\s*+ end=+)+ contains=groovyScopeDecl,userClasses,groovyType,groovyStorageClass,@groovyClasses
   else
     " This line catches method declarations at any indentation>0, but it assumes
     " two things:
     "   1. class names are always capitalized (ie: Button)
     "   2. method names are never capitalized (except constructors, of course)
-    syn region groovyFuncDef start=+^\s\+\(\(public\|protected\|private\|static\|abstract\|final\|native\|synchronized\)\s\+\)*\(\(void\|boolean\|char\|byte\|short\|int\|long\|float\|double\|\([A-Za-z_][A-Za-z0-9_$]*\.\)*[A-Z][A-Za-z0-9_$]*\)\(<[^>]*>\)\=\(\[\]\)*\s\+[a-z][A-Za-z0-9_$]*\|[A-Z][A-Za-z0-9_$]*\)\s*([^0-9]+ end=+)+ contains=groovyScopeDecl,groovyType,groovyStorageClass,groovyComment,groovyLineComment,@groovyClasses
+    syn region groovyFuncDef start=+^\s\+\(\(public\|protected\|private\|static\|abstract\|final\|native\|synchronized\)\s\+\)*\(\(void\|boolean\|char\|byte\|short\|int\|long\|float\|double\|\([A-Za-z_][A-Za-z0-9_$]*\.\)*[A-Z][A-Za-z0-9_$]*\)\(<[^>]*>\)\=\(\[\]\)*\s\+[a-z][A-Za-z0-9_$]*\|[A-Z][A-Za-z0-9_$]*\)\s*([^0-9]+ end=+)+ contains=groovyScopeDecl,userClasses,groovyType,groovyStorageClass,groovyComment,groovyLineComment,@groovyClasses
   endif
   syn match  groovyBraces  "[{}]"
   syn cluster groovyTop add=groovyFuncDef,groovyBraces
@@ -395,7 +395,8 @@ syn match   groovyParenError       "\]"
 
 " Custom user classes
 syn match   userClasses            "\<[A-Z]\{1,}[a-zA-Z0-9]*\>"
-syn match groovyExceptions        "\<Exception\>\|\<[A-Z]\{1,}[a-zA-Z0-9]*Exception\>"
+syn match   userAnnotations        "@\<[A-Z]\{1,}[a-zA-Z0-9]*\>"
+syn match   groovyExceptions        "\<Exception\>\|\<[A-Z]\{1,}[a-zA-Z0-9]*Exception\>"
 
 " ###############################
 " java.vim default highlighting
@@ -444,6 +445,7 @@ if version >= 508 || !exists("did_groovy_syn_inits")
 
   GroovyHiLink groovyType		Type
   GroovyHiLink userClasses              Include
+  GroovyHiLink userAnnotations          Include
   GroovyHiLink userException            Exception
   GroovyHiLink groovyExternal		Include
 
